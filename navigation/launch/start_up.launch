@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- 启动获取雷达数据节点 -->
+  <include file="$(find navigation)/launch/get_laser.launch" />
+  <!-- 启动导航节点 -->
+  <include file="$(find navigation)/launch/my_nav.launch" />
+  <!-- 点云建图 -->
+  <include file="$(find navigation)/launch/octomap.launch" />
+
+</launch>

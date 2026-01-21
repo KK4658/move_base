@@ -1,0 +1,27 @@
+global_costmap:
+  global_frame: camera_init #用来表示全局代价地图需要在哪个参考系下运行
+  robot_base_frame: body #用来表示代价地图可以参考的机器人本体的坐标系
+  # static_map: false 
+  #用来决定代价地图是否需要根据map_server提供的地图信息进行初始化
+  #  #如果不需要使用已有的地图或者map_server最好将该参数设置为false
+  static_map: true
+  update_frequency: 1.0
+  publish_frequency: 1.0
+  transform_tolerance: 1.0
+
+recovery_behaviors:
+  - name: 'conservative_reset'
+    type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  - name: 'rotate_recovery'
+    type: 'rotate_recovery/RotateRecovery'
+  - name: 'aggressive_reset'
+    type: 'clear_costmap_recovery/ClearCostmapRecovery'
+
+conservative_reset:
+  reset_distance: 2.0
+  layer_names: ["obstacle_layer"]
+
+aggressive_reset:
+  reset_distance: 0.0
+  layer_names: ["obstacle_layer"]
+

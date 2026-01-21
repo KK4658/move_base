@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- 接受mid360数据 -->
+    <include file="$(find livox_ros_driver2)/launch_ROS1/msg_MID360.launch" />
+    <node name="livoxMSG_to_PCD" pkg="fast_lio" type="livox_msg_to_PCD" />
+
+    <!-- fast_lio -->
+    <include file="$(find fast_lio)/launch/mapping_mid360.launch">
+        <!-- <remap from="camera_init" to="odom" /> -->
+    </include>
+
+
+    <!-- 把3d雷达数据压成2d雷达数据 -->
+    <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
+        <remap from="cloud_in" to="/livox/pointcloud"/>
+        <!-- <remap from="cloud_in" to="/rslidar_points"/> -->
+        <remap from="scan" to="/lidar2D/scan"/>
+        <remap from="livox_frame" to="camera_init"/>
+        <rosparam>
+            #target_frame: camera_init # Leave disabled to output scan in pointcloud frame
+            transform_tolerance: 0.01
+            min_height: -0.4
+            max_height: 1.0
+
+            angle_min: -3.1415926 # -M_PI
+            angle_max: 3.1415926 # M_PI
+            angle_increment: 0.003 # 0.17degree
+            scan_time: 0.1
+            range_min: 0.2
+            range_max: 100
+            use_inf: true
+            inf_epsilon: 1.0
+
+            # Concurrency level, affects number of pointclouds queued for processing and number of threads used
+            # 0 : Detect number of cores
+            # 1 : Single threaded
+            # 2->inf : Parallelism level
+            concurrency_level: 1
+        </rosparam>
+    </node>
+
+
+    <node pkg="tf2_ros" type="static_transform_publisher" name="link_broadcaster3" args="0.0 0.0 0.0 0.0 0.0 0.0  livox_frame  map" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="link_broadcaster1" args="0.0 0.0 0.0 0.0 0.0 0.0  body  base_link" />
+<node pkg="tf2_ros" type="static_transform_publisher" name="link_broadcaster2" args="0.0 0.0 0.0 0.0 0.0 0.0  map  camera_init" />
+</launch>
