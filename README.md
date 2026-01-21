@@ -1,1 +1,2 @@
 # move_base
+此包是调用使用mid360点云和内置imu驱动fast_lio2。把mid360客制化数据转换成point_cloud2点云数据，使用octomap转化成增量式地图（使用本来有的地图也可以），最后把pointcloud2转化成二维laserscan,更新move_base的局部地图
